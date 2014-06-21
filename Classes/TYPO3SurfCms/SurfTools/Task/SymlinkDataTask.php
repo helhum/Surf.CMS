@@ -39,6 +39,8 @@ class SymlinkDataTask extends \TYPO3\Surf\Domain\Model\Task {
 			"cd $targetReleasePath/$webDirectory",
 			"rm -rf fileadmin",
 			"rm -rf uploads",
+			'{ [ -d ../../../shared/Data/fileadmin ] || mkdir -p ../../../shared/Data/fileadmin ; }',
+			'{ [ -d ../../../shared/Data/uploads ] || mkdir -p ../../../shared/Data/uploads ; }',
 			"ln -sf ../../../shared/Data/fileadmin fileadmin",
 			"ln -sf ../../../shared/Data/uploads uploads"
 		);
