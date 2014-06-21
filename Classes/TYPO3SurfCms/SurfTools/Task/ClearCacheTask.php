@@ -34,12 +34,12 @@ class ClearCacheTask extends \TYPO3\Surf\Domain\Model\Task {
 	 * @return void
 	 */
 	public function execute(Node $node, Application $application, Deployment $deployment, array $options = array()) {
-		$phpBinaryPathAndFilename = $application->getOption('phpBinaryPathAndFilename') ?: 'php';
+		$phpBinaryPathAndFilename = isset($options['phpBinaryPathAndFilename']) ? $options['phpBinaryPathAndFilename'] . ' ' : 'php ';
 		$targetReleasePath = $deployment->getApplicationReleasePath($application);
-		$webDirectory = $application->hasOption('webDirectory') ? rtrim($application->getOption('webDirectory'), '/') . '/' : '';
+		$webDirectory = isset($options['webDirectory']) ? rtrim($options['webDirectory']) . '/' : '';
 		$this->shell->executeOrSimulate(array(
-			'cd ' . escapeshellarg($targetReleasePath),
-			$phpBinaryPathAndFilename . ' ' . $webDirectory . 'typo3/cli_dispatch.phpsh extbase cacheapi:clearallcaches'
+			'cd ' . escapeshellarg($targetReleasePath . $webDirectory),
+			$phpBinaryPathAndFilename . 'typo3/cli_dispatch.phpsh extbase cacheapi:clearallcaches'
 		), $node, $deployment);
 	}
 
@@ -55,6 +55,4 @@ class ClearCacheTask extends \TYPO3\Surf\Domain\Model\Task {
 	public function simulate(Node $node, Application $application, Deployment $deployment, array $options = array()) {
 		$this->execute($node, $application, $deployment, $options);
 	}
-
 }
-?>

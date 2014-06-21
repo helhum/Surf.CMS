@@ -34,14 +34,14 @@ class CompareDatabaseTask extends \TYPO3\Surf\Domain\Model\Task {
 	 * @return void
 	 */
 	public function execute(Node $node, Application $application, Deployment $deployment, array $options = array()) {
-		$phpBinaryPathAndFilename = $application->getOption('phpBinaryPathAndFilename') ?: 'php';
+		$phpBinaryPathAndFilename = isset($options['phpBinaryPathAndFilename']) ? $options['phpBinaryPathAndFilename'] . ' ' : 'php ';
 		$targetReleasePath = $deployment->getApplicationReleasePath($application);
 		$webDirectory = isset($options['webDirectory']) ? rtrim($options['webDirectory']) . '/' : '';
 		$databaseCompareMode = isset($options['databaseCompareMode']) ? $options['databaseCompareMode'] : '2,4';
 
 		$this->shell->executeOrSimulate(array(
-			'cd ' . escapeshellarg($targetReleasePath),
-			$phpBinaryPathAndFilename . ' ' . $webDirectory . 'typo3/cli_dispatch.phpsh extbase databaseapi:databasecompare ' . $databaseCompareMode
+			'cd ' . escapeshellarg($targetReleasePath . $webDirectory),
+			$phpBinaryPathAndFilename . 'typo3/cli_dispatch.phpsh extbase databaseapi:databasecompare ' . escapeshellarg($databaseCompareMode)
 		), $node, $deployment);
 	}
 
@@ -59,4 +59,3 @@ class CompareDatabaseTask extends \TYPO3\Surf\Domain\Model\Task {
 	}
 
 }
-?>
