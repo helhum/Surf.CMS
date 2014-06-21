@@ -36,8 +36,9 @@ class CompareDatabaseTask extends \TYPO3\Surf\Domain\Model\Task {
 	public function execute(Node $node, Application $application, Deployment $deployment, array $options = array()) {
 		$phpBinaryPathAndFilename = $application->getOption('phpBinaryPathAndFilename') ?: 'php';
 		$targetReleasePath = $deployment->getApplicationReleasePath($application);
-		$webDirectory = $application->hasOption('webDirectory') ? rtrim($application->getOption('webDirectory'), '/') . '/' : '';
-		$databaseCompareMode = $application->getOption('typo3surfcms.surftools:compareDatabase[databaseCompareMode]') ?: '2,4';
+		$webDirectory = isset($options['webDirectory']) ? rtrim($options['webDirectory']) . '/' : '';
+		$databaseCompareMode = isset($options['databaseCompareMode']) ? $options['databaseCompareMode'] : '2,4';
+
 		$this->shell->executeOrSimulate(array(
 			'cd ' . escapeshellarg($targetReleasePath),
 			$phpBinaryPathAndFilename . ' ' . $webDirectory . 'typo3/cli_dispatch.phpsh extbase databaseapi:databasecompare ' . $databaseCompareMode
