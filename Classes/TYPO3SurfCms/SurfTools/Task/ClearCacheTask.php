@@ -34,12 +34,12 @@ class ClearCacheTask extends \TYPO3\Surf\Domain\Model\Task {
 	 * @return void
 	 */
 	public function execute(Node $node, Application $application, Deployment $deployment, array $options = array()) {
+		$phpBinaryPathAndFilename = $application->getOption('phpBinaryPathAndFilename') ?: 'php';
 		$targetReleasePath = $deployment->getApplicationReleasePath($application);
-		$httpHost = $node->getOption('HTTP_HOST');
 		$webDirectory = $application->hasOption('webDirectory') ? rtrim($application->getOption('webDirectory'), '/') . '/' : '';
 		$this->shell->executeOrSimulate(array(
 			'cd ' . escapeshellarg($targetReleasePath),
-				($httpHost ? 'HTTP_HOST=' . escapeshellarg($httpHost) . ' ' : '') . 'php ' . $webDirectory . 'typo3/cli_dispatch.phpsh extbase cacheapi:clearallcaches'
+			$phpBinaryPathAndFilename . ' ' . $webDirectory . 'typo3/cli_dispatch.phpsh extbase cacheapi:clearallcaches'
 		), $node, $deployment);
 	}
 
