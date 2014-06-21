@@ -36,7 +36,7 @@ class CompareDatabaseTask extends \TYPO3\Surf\Domain\Model\Task {
 	public function execute(Node $node, Application $application, Deployment $deployment, array $options = array()) {
 		$phpBinaryPathAndFilename = isset($options['phpBinaryPathAndFilename']) ? $options['phpBinaryPathAndFilename'] . ' ' : 'php ';
 		$targetReleasePath = $deployment->getApplicationReleasePath($application);
-		$webDirectory = isset($options['webDirectory']) ? rtrim($options['webDirectory']) . '/' : '';
+		$webDirectory = isset($options['webDirectory']) ? rtrim($options['webDirectory'], '/') . '/' : '';
 		$databaseCompareMode = isset($options['databaseCompareMode']) ? $options['databaseCompareMode'] : '2,4';
 
 		$this->shell->executeOrSimulate(array(
@@ -57,5 +57,4 @@ class CompareDatabaseTask extends \TYPO3\Surf\Domain\Model\Task {
 	public function simulate(Node $node, Application $application, Deployment $deployment, array $options = array()) {
 		$this->execute($node, $application, $deployment, $options);
 	}
-
 }
