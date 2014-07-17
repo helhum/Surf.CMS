@@ -2,7 +2,7 @@
 namespace TYPO3SurfCms\SurfTools\Task;
 
 /*                                                                        *
- * This script belongs to the FLOW3 package "TYPO3SurfCms.SurfTools".     *
+ * This script belongs to the TYPO3 Flow package "TYPO3SurfCms.SurfTools".*
  *                                                                        *
  *                                                                        */
 
