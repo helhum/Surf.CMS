@@ -38,18 +38,18 @@ class SymlinkDataTask extends \TYPO3\Surf\Domain\Model\Task {
 		$commands = array(
 			"cd $targetReleasePath/$webDirectory",
 			"rm -rf fileadmin",
-			"rm -rf uploads",
-			'{ [ -d ../../../shared/Data/fileadmin ] || mkdir -p ../../../shared/Data/fileadmin ; }',
-			'{ [ -d ../../../shared/Data/uploads ] || mkdir -p ../../../shared/Data/uploads ; }',
-			"ln -sf ../../../shared/Data/fileadmin fileadmin",
-			"ln -sf ../../../shared/Data/uploads uploads"
+			'rm -rf uploads',
+			'{ [ -d ../../shared/Data/fileadmin ] || mkdir -p ../../shared/Data/fileadmin ; }',
+			'{ [ -d ../../shared/Data/uploads ] || mkdir -p ../../shared/Data/uploads ; }',
+			"ln -sf ../../shared/Data/fileadmin fileadmin",
+			"ln -sf ../../shared/Data/uploads uploads"
 		);
 		if (isset($options['directories']) && is_array($options['directories'])) {
 			foreach ($options['directories'] as $directory) {
 				$commands[] = 'rm -rf ' . escapeshellarg($directory);
-				$targetDirectory = escapeshellarg('../../../shared/Data/' . $directory);
+				$targetDirectory = escapeshellarg('../../shared/Data/' . $directory);
 				$commands[] = '{ [ -d ' . $targetDirectory . ' ] || mkdir -p ' . $targetDirectory . ' ; }';
-				$commands[] = 'ln -sf ' . escapeshellarg(str_repeat('../', substr_count(trim($directory, '/'), '/')) . '../../../shared/Data/' . $directory) . ' ' . escapeshellarg($directory);
+				$commands[] = 'ln -sf ' . escapeshellarg(str_repeat('../', substr_count(trim($directory, '/'), '/')) . '../../shared/Data/' . $directory) . ' ' . escapeshellarg($directory);
 			}
 		}
 		$this->shell->executeOrSimulate($commands, $node, $deployment);
