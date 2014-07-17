@@ -4,7 +4,7 @@
     "description": "Helper tools to deploy TYPO3 CMS with TYPO3 Surf",
     "license": "GPL-3.0+",
     "require": {
-        "typo3/surf": "*"
+        "typo3/surf": "@dev"
     },
     "replace": {
         "typo3-surf-cms/surftools": "self.version"
