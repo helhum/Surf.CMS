@@ -6,6 +6,9 @@
     "require": {
         "typo3/surf": "*"
     },
+	"replace": {
+		"typo3-surf-cms/surftools": "self.version"
+	},
     "autoload": {
         "psr-0": {
             "TYPO3SurfCms\\SurfTools": "Classes"
