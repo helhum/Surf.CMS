@@ -35,7 +35,12 @@ abstract class AbstractTypo3CliTask extends \TYPO3\Surf\Domain\Model\Task {
 	 */
 	protected function executeCliCommand(array $cliArguments, Node $node, Application $application, Deployment $deployment, array $options = array()) {
 		$phpBinaryPathAndFilename = isset($options['phpBinaryPathAndFilename']) ? $options['phpBinaryPathAndFilename'] : 'php';
-		$commandName = $phpBinaryPathAndFilename . ' ';
+		if (isset($options['TYPO3_CONTEXT'])) {
+			$commandName = 'TYPO3_CONTEXT=' . $options['TYPO3_CONTEXT'] . ' ';
+		} else {
+			$commandName = '';
+		}
+		$commandName .= $phpBinaryPathAndFilename . ' ';
 		if (isset($options['useApplicationWorkspace']) && $options['useApplicationWorkspace'] === TRUE) {
 			$basePath = $deployment->getWorkspacePath($application);
 		} else {
