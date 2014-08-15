@@ -9,6 +9,11 @@
     "replace": {
         "typo3-surf-cms/surftools": "self.version"
     },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },    
     "autoload": {
         "psr-0": {
             "TYPO3SurfCms\\SurfTools": "Classes"
