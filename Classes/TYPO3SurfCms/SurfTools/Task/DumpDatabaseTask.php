@@ -50,7 +50,7 @@ class DumpDatabaseTask extends Task {
 		$localhost = new Node('localhost');
 		$localhost->setHostname('localhost');
 
-		$this->shell->execute($commands, $localhost, $deployment);
+		$this->shell->executeOrSimulate($commands, $localhost, $deployment);
 	}
 
 	/**
