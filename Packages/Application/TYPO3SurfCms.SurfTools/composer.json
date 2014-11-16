@@ -1,0 +1,22 @@
+{
+    "name": "typo3surfcms/surftools",
+    "type": "typo3-flow-package",
+    "description": "Helper tools to deploy TYPO3 CMS with TYPO3 Surf",
+    "license": "GPL-3.0+",
+    "require": {
+        "typo3/surf": "@dev"
+    },
+    "replace": {
+        "typo3-surf-cms/surftools": "self.version"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },    
+    "autoload": {
+        "psr-0": {
+            "TYPO3SurfCms\\SurfTools": "Classes"
+        }
+    }
+}
