@@ -12,7 +12,7 @@
         }
     },    
     "autoload": {
-        "psr-4": {
+        "psr-0": {
             "TYPO3\\Surf\\CMS\\Tasks": "Classes"
         }
     }
