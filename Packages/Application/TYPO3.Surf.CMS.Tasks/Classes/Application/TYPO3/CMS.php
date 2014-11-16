@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3SurfCms\SurfTools\Application;
+namespace TYPO3\Surf\CMS\Tasks\Application\TYPO3;
 
 /*                                                                        *
- * This script belongs to the TYPO3 Flow package "TYPO3SurfCms.SurfTools".*
+ * This script belongs to the TYPO3 Flow package "TYPO3.Surf.CMS.Tasks".*
  *                                                                        *
  *                                                                        */
 use TYPO3\Surf\Domain\Model\Workflow;
@@ -24,15 +24,15 @@ class CMS extends \TYPO3\Surf\Application\TYPO3\CMS {
 		parent::registerTasks($workflow, $deployment);
 
 		if ($deployment->hasOption('initialDeployment') && $deployment->getOption('initialDeployment') === TRUE) {
-			$workflow->addTask('typo3surfcms.surftools:dumpDatabase', 'initialize', $this);
-			$workflow->addTask('typo3surfcms.surftools:rsyncFolders', 'initialize', $this);
+			$workflow->addTask('typo3.surf.cms.tasks:dumpDatabase', 'initialize', $this);
+			$workflow->addTask('typo3.surf.cms.tasks:rsyncFolders', 'initialize', $this);
 		}
 
 		$workflow
-				->afterStage('transfer', 'typo3surfcms.surftools:symlinkData', $this)
-				->afterStage('transfer', 'typo3surfcms.surftools:copyConfiguration', $this)
-				->addTask('typo3surfcms.surftools:compareDatabase', 'migrate', $this)
-				->afterStage('switch', 'typo3surfcms.surftools:flushCaches', $this);
+				->afterStage('transfer', 'typo3.surf.cms.tasks:symlinkData', $this)
+				->afterStage('transfer', 'typo3.surf.cms.tasks:copyConfiguration', $this)
+				->addTask('typo3.surf.cms.tasks:compareDatabase', 'migrate', $this)
+				->afterStage('switch', 'typo3.surf.cms.tasks:flushCaches', $this);
 	}
 
 	/**
@@ -43,7 +43,7 @@ class CMS extends \TYPO3\Surf\Application\TYPO3\CMS {
 		switch ($packageMethod) {
 			case 'composer':
 				$workflow->addTask('typo3.surf:package:git', 'package', $this);
-				$workflow->addTask('typo3surfcms.surftools:package:composer', 'package', $this);
+				$workflow->addTask('typo3.surf.cms.tasks:package:composer', 'package', $this);
 				break;
 			default:
 				parent::registerTasksForPackageMethod($workflow, $packageMethod);

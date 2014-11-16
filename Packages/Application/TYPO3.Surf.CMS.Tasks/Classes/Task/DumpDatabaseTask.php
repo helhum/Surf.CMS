@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3SurfCms\SurfTools\Task;
+namespace TYPO3\Surf\CMS\Tasks\Task;
 
 /*                                                                        *
- * This script belongs to the TYPO3 Flow package "TYPO3SurfCms.SurfTools".*
+ * This script belongs to the TYPO3 Flow package "TYPO3.Surf.CMS.Tasks".*
  *                                                                        *
  *                                                                        */
 

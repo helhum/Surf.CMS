@@ -1,0 +1,19 @@
+{
+    "name": "typo3/surf-cms-tasks",
+    "type": "typo3-flow-package",
+    "description": "Additional tasks for TYPO3 CMS deployment with TYPO3 Surf",
+    "license": "GPL-3.0+",
+    "require": {
+        "typo3/surf": "@dev"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        }
+    },    
+    "autoload": {
+        "psr-4": {
+            "TYPO3\\Surf\\CMS\\Tasks": "Classes"
+        }
+    }
+}
