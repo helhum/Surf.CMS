@@ -1,13 +1,13 @@
 <?php
-namespace TYPO3\Surf\CMS\Tasks\Task;
+namespace TYPO3\Surf\CMS\Task;
 
 /*                                                                        *
- * This script belongs to the TYPO3 Flow package "TYPO3.Surf.CMS.Tasks".*
+ * This script belongs to the TYPO3 Flow package "TYPO3.Surf.CMS".*
  *                                                                        *
  *                                                                        */
 
+use TYPO3\Surf\CMS\Application\TYPO3\CMS;
 use TYPO3\Surf\Domain\Model\Node;
-use TYPO3\Surf\Domain\Model\Application;
 use TYPO3\Surf\Domain\Model\Deployment;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Surf\Exception\InvalidConfigurationException;
@@ -28,17 +28,17 @@ abstract class AbstractTypo3CliTask extends \TYPO3\Surf\Domain\Model\Task {
 	 *
 	 * @param array $cliArguments
 	 * @param \TYPO3\Surf\Domain\Model\Node $node
-	 * @param \TYPO3\Surf\Domain\Model\Application $application
+	 * @param CMS $application
 	 * @param \TYPO3\Surf\Domain\Model\Deployment $deployment
 	 * @param array $options
 	 * @return void
 	 */
-	protected function executeCliCommand(array $cliArguments, Node $node, Application $application, Deployment $deployment, array $options = array()) {
+	protected function executeCliCommand(array $cliArguments, Node $node, CMS $application, Deployment $deployment, array $options = array()) {
 		$phpBinaryPathAndFilename = isset($options['phpBinaryPathAndFilename']) ? $options['phpBinaryPathAndFilename'] : 'php';
 		if (isset($options['TYPO3_CONTEXT'])) {
 			$commandName = 'TYPO3_CONTEXT=' . $options['TYPO3_CONTEXT'] . ' ';
 		} else {
-			$commandName = '';
+			$commandName = 'TYPO3_CONTEXT=' . $application->getContext() . ' ';
 		}
 		$commandName .= $phpBinaryPathAndFilename . ' ';
 		if (isset($options['useApplicationWorkspace']) && $options['useApplicationWorkspace'] === TRUE) {
@@ -58,24 +58,24 @@ abstract class AbstractTypo3CliTask extends \TYPO3\Surf\Domain\Model\Task {
 	 * Simulate this task
 	 *
 	 * @param Node $node
-	 * @param Application $application
+	 * @param CMS $application
 	 * @param Deployment $deployment
 	 * @param array $options
 	 * @return void
 	 */
-	public function simulate(Node $node, Application $application, Deployment $deployment, array $options = array()) {
+	public function simulate(Node $node, CMS $application, Deployment $deployment, array $options = array()) {
 		$this->execute($node, $application, $deployment, $options);
 	}
 
 	/**
 	 * @param Node $node
-	 * @param Application $application
+	 * @param CMS $application
 	 * @param Deployment $deployment
 	 * @param array $options
 	 * @return string
 	 * @throws InvalidConfigurationException
 	 */
-	protected function getAvailableCliPackage(Node $node, Application $application, Deployment $deployment, array $options = array()) {
+	protected function getAvailableCliPackage(Node $node, CMS $application, Deployment $deployment, array $options = array()) {
 		if ($this->packageExists('typo3_console', $node, $application, $deployment, $options)) {
 			return 'typo3_console';
 		}
@@ -94,12 +94,12 @@ abstract class AbstractTypo3CliTask extends \TYPO3\Surf\Domain\Model\Task {
 	 *
 	 * @param string $packageKey
 	 * @param Node $node
-	 * @param Application $application
+	 * @param CMS $application
 	 * @param Deployment $deployment
 	 * @param array $options
 	 * @return boolean
 	 */
-	protected function packageExists($packageKey, Node $node, Application $application, Deployment $deployment, array $options = array()) {
+	protected function packageExists($packageKey, Node $node, CMS $application, Deployment $deployment, array $options = array()) {
 		if (isset($options['useApplicationWorkspace']) && $options['useApplicationWorkspace'] === TRUE) {
 			$basePath = $deployment->getWorkspacePath($application);
 		} else {

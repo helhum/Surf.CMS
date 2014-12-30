@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\Surf\CMS\Tasks\Task\Package;
+namespace TYPO3\Surf\CMS\Task\Package;
 
 /*                                                                        *
- * This script belongs to the TYPO3 Flow package "TYPO3.Surf.CMS.Tasks".*
+ * This script belongs to the TYPO3 Flow package "TYPO3.Surf.CMS".*
  *                                                                        *
  *                                                                        */
 
@@ -11,7 +11,7 @@ use TYPO3\Surf\Domain\Model\Application;
 use TYPO3\Surf\Domain\Model\Deployment;
 
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Surf\CMS\Tasks\Task\AbstractTypo3CliTask;
+use TYPO3\Surf\CMS\Task\AbstractTypo3CliTask;
 
 /**
  * Installs the composer packages based on a composer.json file in the projects root folder
