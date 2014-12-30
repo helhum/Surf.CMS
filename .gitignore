@@ -1,0 +1,12 @@
+/Build/
+/Configuration/
+/Data/
+/Packages/Framework/
+/Packages/Libraries/
+/Packages/Application/TYPO3.Surf/
+/Web/
+/bin/
+/Readme.txt
+/Upgrading.txt
+/flow
+/flow.bat
