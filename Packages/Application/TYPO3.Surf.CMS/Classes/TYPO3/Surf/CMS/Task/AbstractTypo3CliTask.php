@@ -8,6 +8,7 @@ namespace TYPO3\Surf\CMS\Task;
 
 use TYPO3\Surf\CMS\Application\TYPO3\CMS;
 use TYPO3\Surf\Domain\Model\Node;
+use TYPO3\Surf\Domain\Model\Application;
 use TYPO3\Surf\Domain\Model\Deployment;
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Surf\Exception\InvalidConfigurationException;
@@ -58,24 +59,24 @@ abstract class AbstractTypo3CliTask extends \TYPO3\Surf\Domain\Model\Task {
 	 * Simulate this task
 	 *
 	 * @param Node $node
-	 * @param CMS $application
+	 * @param Application $application
 	 * @param Deployment $deployment
 	 * @param array $options
 	 * @return void
 	 */
-	public function simulate(Node $node, CMS $application, Deployment $deployment, array $options = array()) {
+	public function simulate(Node $node, Application $application, Deployment $deployment, array $options = array()) {
 		$this->execute($node, $application, $deployment, $options);
 	}
 
 	/**
 	 * @param Node $node
-	 * @param CMS $application
+	 * @param Application $application
 	 * @param Deployment $deployment
 	 * @param array $options
 	 * @return string
 	 * @throws InvalidConfigurationException
 	 */
-	protected function getAvailableCliPackage(Node $node, CMS $application, Deployment $deployment, array $options = array()) {
+	protected function getAvailableCliPackage(Node $node, Application $application, Deployment $deployment, array $options = array()) {
 		if ($this->packageExists('typo3_console', $node, $application, $deployment, $options)) {
 			return 'typo3_console';
 		}
