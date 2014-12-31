@@ -1,5 +1,5 @@
 <?php
-namespace TYPO3\Surf\CMS\Task;
+namespace TYPO3\Surf\CMS\Task\TYPO3\CMS;
 
 /*                                                                        *
  * This script belongs to the TYPO3 Flow package "TYPO3.Surf.CMS".*

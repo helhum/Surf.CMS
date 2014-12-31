@@ -55,10 +55,10 @@ class CMS extends \TYPO3\Surf\Application\TYPO3\CMS {
 		}
 
 		$workflow
-				->afterStage('transfer', 'typo3.surf.cms:symlinkData', $this)
-				->afterStage('transfer', 'typo3.surf.cms:copyConfiguration', $this)
-				->addTask('typo3.surf.cms:compareDatabase', 'migrate', $this)
-				->afterStage('switch', 'typo3.surf.cms:flushCaches', $this);
+				->afterStage('transfer', 'typo3.surf.cms:typo3:cms:symlinkData', $this)
+				->afterStage('transfer', 'typo3.surf.cms:typo3:cms:copyConfiguration', $this)
+				->addTask('typo3.surf.cms:typo3:cms:compareDatabase', 'migrate', $this)
+				->afterStage('switch', 'typo3.surf.cms:typo3:cms:flushCaches', $this);
 	}
 
 	/**

@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\Surf\CMS\Task;
+namespace TYPO3\Surf\CMS\Task\TYPO3\CMS;
 
 /*                                                                        *
- * This script belongs to the TYPO3 Flow package "TYPO3SurfCms.SurfTools".*
+ * This script belongs to the TYPO3 Flow package "TYPO3.Surf.CMS".*
  *                                                                        *
  *                                                                        */
 
@@ -13,10 +13,10 @@ use TYPO3\Surf\Domain\Model\Deployment;
 use TYPO3\Flow\Annotations as Flow;
 
 /**
- * This task activates a given set of packages
- * or reads the packages from composer json and activates them
+ * This task create new tables or add new fields to them.
+ * This task requires the extension coreapi.
  */
-class ActivatePackagesTask extends AbstractTypo3CliTask {
+class CompareDatabaseTask extends AbstractTypo3CliTask {
 
 	/**
 	 * Execute this task
@@ -29,18 +29,16 @@ class ActivatePackagesTask extends AbstractTypo3CliTask {
 	 * @return void
 	 */
 	public function execute(Node $node, Application $application, Deployment $deployment, array $options = array()) {
-		if (!$this->packageExists('typo3_console', $node, $application, $deployment)) {
-			throw new InvalidConfigurationException('Extension "typo3_console" is not found! Make sure it is available in your project, or remove this task in your deployment configuration!', 1405527176);
+		if (!$this->packageExists('coreapi', $node, $application, $deployment)) {
+			throw new InvalidConfigurationException('Extension "coreapi" is not found! Make sure it is available in your project, or remove this task in your deployment configuration!', 1405527176);
 		}
-		$activePackages = isset($options['activePackages']) ? $options['activePackages'] : array();
-		foreach ($activePackages as $packageKey) {
-			$this->executeCliCommand(
-				array('./typo3cms','extension:install', $packageKey),
-				$node,
-				$application,
-				$deployment,
-				$options
-			);
-		}
+		$databaseCompareMode = isset($options['databaseCompareMode']) ? $options['databaseCompareMode'] : '2,4';
+		$this->executeCliCommand(
+			array('typo3/cli_dispatch.phpsh', 'extbase', 'databaseapi:databasecompare', $databaseCompareMode),
+			$node,
+			$application,
+			$deployment,
+			$options
+		);
 	}
 }
