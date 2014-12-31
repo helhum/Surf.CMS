@@ -52,8 +52,8 @@ class RsyncFoldersTask extends \TYPO3\Surf\Domain\Model\Task {
 			'{deploymentPath}' => $application->getDeploymentPath(),
 			'{sharedPath}' => $application->getSharedPath(),
 			'{releasePath}' => $deployment->getApplicationReleasePath($application),
-			'{currentPath}' => $application->getDeploymentPath() . '/releases/current',
-			'{previousPath}' => $application->getDeploymentPath() . '/releases/previous'
+			'{currentPath}' => $application->getReleasesPath() . '/current',
+			'{previousPath}' => $application->getReleasesPath() . '/previous'
 		);
 
 		$commands = array();
