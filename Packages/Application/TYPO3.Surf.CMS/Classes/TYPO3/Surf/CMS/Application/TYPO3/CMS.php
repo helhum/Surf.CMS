@@ -68,12 +68,14 @@ class CMS extends \TYPO3\Surf\Application\TYPO3\CMS {
 	protected function registerTasksForPackageMethod(Workflow $workflow, $packageMethod) {
 		switch ($packageMethod) {
 			case 'composer':
-				$workflow->addTask('typo3.surf:package:git', 'package', $this);
-				$workflow->addTask('typo3.surf.cms:package:composer', 'package', $this);
+				$workflow
+					->addTask('typo3.surf:package:git', 'package', $this)
+					->addTask('typo3.surf.cms:package:composer', 'package', $this);
 				break;
 			default:
 				parent::registerTasksForPackageMethod($workflow, $packageMethod);
 		}
+		$workflow->afterStage('package', 'typo3.surf.cms:typo3:cms:createPackageStates', $this);
 	}
 
 

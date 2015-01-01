@@ -11,12 +11,11 @@ use TYPO3\Surf\Domain\Model\Application;
 use TYPO3\Surf\Domain\Model\Deployment;
 
 use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Surf\CMS\Task\TYPO3\CMS\AbstractTypo3CliTask;
 
 /**
  * Installs the composer packages based on a composer.json file in the projects root folder
  */
-class ComposerTask extends AbstractTypo3CliTask {
+class ComposerTask extends \TYPO3\Surf\Domain\Model\Task {
 
 	/**
 	 * @Flow\Inject
@@ -39,10 +38,6 @@ class ComposerTask extends AbstractTypo3CliTask {
 		if ($this->composerManifestExists($composerRootPath, $node, $deployment)) {
 			$command = $this->buildComposerInstallCommand($composerRootPath, $options);
 			$this->shell->executeOrSimulate($command, $node, $deployment);
-			$options = array('useApplicationWorkspace' => TRUE);
-			if ($this->packageExists('typo3_console', $node, $application, $deployment, $options)) {
-				$this->executeCliCommand(array('./typo3cms', 'install:generatepackagestates', '--remove-inactive-packages'), $node, $application, $deployment, $options);
-			}
 		}
 	}
 
@@ -95,4 +90,3 @@ class ComposerTask extends AbstractTypo3CliTask {
 		return TRUE;
 	}
 }
-?>
