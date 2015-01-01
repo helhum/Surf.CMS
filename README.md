@@ -6,7 +6,7 @@
 
 
 	// APPLICATION
-	$application = new \TYPO3SurfCms\SurfTools\Application\CMS('Introduction Package');
+	$application = new \TYPO3\Surf\CMS\Application\TYPO3\CMS();
 	$application->setOption('projectName', 'Introduction Package');
 	$application->setOption('repositoryUrl', 'git://git.typo3.org/TYPO3CMS/Distributions/Introduction.git');
 	$application->setOption('typo3.surf:gitCheckout[branch]', 'master');
