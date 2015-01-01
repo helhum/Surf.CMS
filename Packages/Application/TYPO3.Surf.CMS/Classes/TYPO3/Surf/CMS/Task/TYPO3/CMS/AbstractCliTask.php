@@ -16,7 +16,7 @@ use TYPO3\Surf\Exception\InvalidConfigurationException;
 /**
  * Abstract task for any remote TYPO3 CMS cli action
  */
-abstract class AbstractTypo3CliTask extends \TYPO3\Surf\Domain\Model\Task {
+abstract class AbstractCliTask extends \TYPO3\Surf\Domain\Model\Task {
 
 	/**
 	 * @Flow\Inject

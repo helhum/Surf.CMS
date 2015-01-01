@@ -16,7 +16,7 @@ use TYPO3\Surf\Exception\InvalidConfigurationException;
  * Clear TYPO3 caches
  * This task requires the extension typo3_console.
  */
-class FlushCachesTask extends AbstractTypo3CliTask {
+class FlushCachesTask extends AbstractCliTask {
 
 	/**
 	 * Execute this task

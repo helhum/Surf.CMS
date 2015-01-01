@@ -16,7 +16,7 @@ use TYPO3\Flow\Annotations as Flow;
  * This task activates a given set of packages
  * or reads the packages from composer json and activates them
  */
-class ActivatePackagesTask extends AbstractTypo3CliTask {
+class ActivatePackagesTask extends AbstractCliTask {
 
 	/**
 	 * Execute this task
