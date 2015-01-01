@@ -55,8 +55,13 @@ class CMS extends \TYPO3\Surf\Application\TYPO3\CMS {
 		}
 
 		$workflow
-				->afterStage('transfer', 'typo3.surf.cms:typo3:cms:symlinkData', $this)
-				->afterStage('transfer', 'typo3.surf.cms:typo3:cms:copyConfiguration', $this)
+				->afterStage(
+					'update',
+					array(
+						'typo3.surf.cms:typo3:cms:symlinkData',
+						'typo3.surf.cms:typo3:cms:copyConfiguration'
+					), $this
+				)
 				->addTask('typo3.surf.cms:typo3:cms:compareDatabase', 'migrate', $this)
 				->afterStage('switch', 'typo3.surf.cms:typo3:cms:flushCaches', $this);
 	}
@@ -66,21 +71,19 @@ class CMS extends \TYPO3\Surf\Application\TYPO3\CMS {
 	 * @param string $packageMethod
 	 */
 	protected function registerTasksForPackageMethod(Workflow $workflow, $packageMethod) {
-		switch ($packageMethod) {
-			case 'composer':
-				$workflow
-					->addTask('typo3.surf:package:git', 'package', $this)
-					->addTask('typo3.surf:composer:install', 'package', $this)
-					->setTaskOptions('typo3.surf:composer:install', array(
-						'useApplicationWorkspace' => TRUE,
-						'nodeName' => 'localhost',
-					));
-				break;
-			default:
-				parent::registerTasksForPackageMethod($workflow, $packageMethod);
-		}
-		$workflow->afterStage('package', 'typo3.surf.cms:typo3:cms:createPackageStates', $this);
-	}
+		parent::registerTasksForPackageMethod($workflow, $packageMethod);
 
+		switch ($packageMethod) {
+			case 'git':
+				$workflow->defineTask('typo3.surf:composer:localInstall', 'typo3.surf:composer:install', array(
+					'nodeName' => 'localhost',
+					'useApplicationWorkspace' => TRUE
+				));
+
+				$workflow->afterStage('package', 'typo3.surf:composer:localInstall', $this)
+					->afterTask('typo3.surf:composer:localInstall', 'typo3.surf.cms:typo3:cms:createPackageStates', $this);
+				break;
+		}
+	}
 
 }
