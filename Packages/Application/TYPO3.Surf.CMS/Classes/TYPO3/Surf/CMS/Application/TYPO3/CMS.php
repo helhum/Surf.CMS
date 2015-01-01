@@ -70,7 +70,11 @@ class CMS extends \TYPO3\Surf\Application\TYPO3\CMS {
 			case 'composer':
 				$workflow
 					->addTask('typo3.surf:package:git', 'package', $this)
-					->addTask('typo3.surf.cms:package:composer', 'package', $this);
+					->addTask('typo3.surf:composer:install', 'package', $this)
+					->setTaskOptions('typo3.surf:composer:install', array(
+						'useApplicationWorkspace' => TRUE,
+						'nodeName' => 'localhost',
+					));
 				break;
 			default:
 				parent::registerTasksForPackageMethod($workflow, $packageMethod);
