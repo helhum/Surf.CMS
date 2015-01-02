@@ -6,6 +6,7 @@ namespace TYPO3\Surf\CMS\Task\TYPO3\CMS;
  *                                                                        *
  *                                                                        */
 
+use TYPO3\Flow\Utility\Files;
 use TYPO3\Surf\CMS\Application\TYPO3\CMS;
 use TYPO3\Surf\Domain\Model\Node;
 use TYPO3\Surf\Domain\Model\Application;
@@ -17,6 +18,20 @@ use TYPO3\Surf\Exception\InvalidConfigurationException;
  * Abstract task for any remote TYPO3 CMS cli action
  */
 abstract class AbstractCliTask extends \TYPO3\Surf\Domain\Model\Task {
+
+	/**
+	 * The working directory. Either local or remote, and probably in a special application root directory
+	 *
+	 * @var string
+	 */
+	protected $workingDirectory;
+
+	/**
+	 * Localhost or deployment target node
+	 *
+	 * @var Node
+	 */
+	protected $targetNode;
 
 	/**
 	 * @Flow\Inject
@@ -35,24 +50,20 @@ abstract class AbstractCliTask extends \TYPO3\Surf\Domain\Model\Task {
 	 * @return boolean|mixed
 	 */
 	protected function executeCliCommand(array $cliArguments, Node $node, CMS $application, Deployment $deployment, array $options = array()) {
+		$this->determineWorkingDirectoryAndTargetNode($node, $application, $deployment, $options);
 		$phpBinaryPathAndFilename = isset($options['phpBinaryPathAndFilename']) ? $options['phpBinaryPathAndFilename'] : 'php';
 		$commandPrefix = '';
 		if (isset($options['context'])) {
 			$commandPrefix = 'TYPO3_CONTEXT=' . escapeshellarg($options['context']) . ' ';
 		}
 		$commandPrefix .= $phpBinaryPathAndFilename . ' ';
-		if (isset($options['useApplicationWorkspace']) && $options['useApplicationWorkspace'] === TRUE) {
-			$targetPath = $deployment->getWorkspacePath($application);
-			$node = $deployment->getNode('localhost');
-		} else {
-			$targetPath = $deployment->getApplicationReleasePath($application);
-		}
-		$applicationRootDirectory = isset($options['applicationRootDirectory']) ? rtrim($options['applicationRootDirectory'], '/') . '/' : '';
+
+		$this->determineWorkingDirectoryAndTargetNode($node, $application, $deployment, $options);
 
 		return $this->shell->executeOrSimulate(array(
-			'cd ' . escapeshellarg($targetPath . $applicationRootDirectory),
+			'cd ' . escapeshellarg($this->workingDirectory),
 			$commandPrefix . implode(' ', array_map('escapeshellarg', $cliArguments))
-		), $node, $deployment);
+		), $this->targetNode, $deployment);
 	}
 
 	/**
@@ -66,6 +77,29 @@ abstract class AbstractCliTask extends \TYPO3\Surf\Domain\Model\Task {
 	 */
 	public function simulate(Node $node, Application $application, Deployment $deployment, array $options = array()) {
 		$this->execute($node, $application, $deployment, $options);
+	}
+
+	/**
+	 * Determines the path to the working directory and the target node by given options
+	 *
+	 * @param Node $node
+	 * @param Application $application
+	 * @param Deployment $deployment
+	 * @param array $options
+	 * @return string
+	 */
+	protected function determineWorkingDirectoryAndTargetNode(Node $node, Application $application, Deployment $deployment, array $options = array()) {
+		if (!isset($this->workingDirectory) || !isset($this->targetNode)) {
+			if (isset($options['useApplicationWorkspace']) && $options['useApplicationWorkspace'] === TRUE) {
+				$targetPath = $deployment->getWorkspacePath($application);
+				$node = $deployment->getNode('localhost');
+			} else {
+				$targetPath = $deployment->getApplicationReleasePath($application);
+			}
+			$applicationRootDirectory = isset($options['applicationRootDirectory']) ? $options['applicationRootDirectory'] : '';
+			$this->workingDirectory = Files::concatenatePaths(array($targetPath, $applicationRootDirectory));
+			$this->targetNode = $node;
+		}
 	}
 
 	/**
@@ -89,9 +123,7 @@ abstract class AbstractCliTask extends \TYPO3\Surf\Domain\Model\Task {
 	}
 
 	/**
-	 * Checks if a composer manifest exists in the directory at the given path.
-	 *
-	 * If no manifest exists, a log message is recorded.
+	 * Checks if a package exists in the packages directory
 	 *
 	 * @param string $packageKey
 	 * @param Node $node
@@ -101,12 +133,39 @@ abstract class AbstractCliTask extends \TYPO3\Surf\Domain\Model\Task {
 	 * @return boolean
 	 */
 	protected function packageExists($packageKey, Node $node, CMS $application, Deployment $deployment, array $options = array()) {
-		if (isset($options['useApplicationWorkspace']) && $options['useApplicationWorkspace'] === TRUE) {
-			$targetPath = $deployment->getWorkspacePath($application);
-		} else {
-			$targetPath = $deployment->getApplicationReleasePath($application);
-		}
-		$packagePath = \TYPO3\Flow\Utility\Files::concatenatePaths(array($targetPath, 'typo3conf/ext/' . $packageKey));
-		return $this->shell->executeOrSimulate('test -d ' . escapeshellarg($packagePath), $node, $deployment, TRUE) === FALSE ? FALSE : TRUE;
+		return $this->directoryExists('typo3conf/ext/' . $packageKey, $node, $application, $deployment, $options);
 	}
+
+	/**
+	 * Checks if a given directory exists.
+	 *
+	 * @param string $directory
+	 * @param Node $node
+	 * @param CMS $application
+	 * @param Deployment $deployment
+	 * @param array $options
+	 * @return boolean
+	 */
+	protected function directoryExists($directory, Node $node, CMS $application, Deployment $deployment, array $options = array()) {
+		$this->determineWorkingDirectoryAndTargetNode($node, $application, $deployment, $options);
+		$directory = Files::concatenatePaths(array($this->workingDirectory, $directory));
+		return $this->shell->executeOrSimulate('test -d ' . escapeshellarg($directory), $this->targetNode, $deployment, TRUE) === FALSE ? FALSE : TRUE;
+	}
+
+	/**
+	 * Checks if a given file exists.
+	 *
+	 * @param string $pathAndFileName
+	 * @param Node $node
+	 * @param CMS $application
+	 * @param Deployment $deployment
+	 * @param array $options
+	 * @return boolean
+	 */
+	protected function fileExists($pathAndFileName, Node $node, CMS $application, Deployment $deployment, array $options = array()) {
+		$this->determineWorkingDirectoryAndTargetNode($node, $application, $deployment, $options);
+		$pathAndFileName = Files::concatenatePaths(array($this->workingDirectory, $pathAndFileName));
+		return $this->shell->executeOrSimulate('test -f ' . escapeshellarg($pathAndFileName), $this->targetNode, $deployment, TRUE) === FALSE ? FALSE : TRUE;
+	}
+
 }
