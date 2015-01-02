@@ -33,7 +33,6 @@ class CreatePackageStatesTask extends AbstractCliTask {
 	 * @throws \TYPO3\Surf\Exception\InvalidConfigurationException
 	 */
 	public function execute(Node $node, Application $application, Deployment $deployment, array $options = array()) {
-		$node = $deployment->getNode('localhost');
 		$options = array('useApplicationWorkspace' => TRUE);
 		if ($this->packageExists('typo3_console', $node, $application, $deployment, $options)) {
 			$this->executeCliCommand(array('./typo3cms', 'install:generatepackagestates', '--remove-inactive-packages'), $node, $application, $deployment, $options);

@@ -43,6 +43,7 @@ abstract class AbstractCliTask extends \TYPO3\Surf\Domain\Model\Task {
 		$commandPrefix .= $phpBinaryPathAndFilename . ' ';
 		if (isset($options['useApplicationWorkspace']) && $options['useApplicationWorkspace'] === TRUE) {
 			$targetPath = $deployment->getWorkspacePath($application);
+			$node = $deployment->getNode('localhost');
 		} else {
 			$targetPath = $deployment->getApplicationReleasePath($application);
 		}
