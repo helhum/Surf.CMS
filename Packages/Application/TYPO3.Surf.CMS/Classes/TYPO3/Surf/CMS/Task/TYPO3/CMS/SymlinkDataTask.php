@@ -6,6 +6,7 @@ namespace TYPO3\Surf\CMS\Task\TYPO3\CMS;
  *                                                                        *
  *                                                                        */
 
+use TYPO3\Flow\Utility\Files;
 use TYPO3\Surf\Domain\Model\Node;
 use TYPO3\Surf\Domain\Model\Application;
 use TYPO3\Surf\Domain\Model\Deployment;
@@ -14,6 +15,7 @@ use TYPO3\Flow\Annotations as Flow;
 
 /**
  * A symlink task for linking the shared data directory
+ * If the symlink target has folder, the folders themselves must exist!
  */
 class SymlinkDataTask extends \TYPO3\Surf\Domain\Model\Task {
 
@@ -34,19 +36,24 @@ class SymlinkDataTask extends \TYPO3\Surf\Domain\Model\Task {
 	 */
 	public function execute(Node $node, Application $application, Deployment $deployment, array $options = array()) {
 		$targetReleasePath = $deployment->getApplicationReleasePath($application);
-		$applicationRootDirectory = $application->hasOption('applicationRootDirectory') ? rtrim($application->getOption('applicationRootDirectory'), '/') . '/' : '';
+		$applicationRootDirectory = isset($options['applicationRootDirectory']) ? trim($options['applicationRootDirectory'], '/') : '';
+		$workingDirectory = escapeshellarg(Files::concatenatePaths(array($targetReleasePath, $applicationRootDirectory)));
+		$relativeDataPath = '../../shared/Data';
+		if (!empty($applicationRootDirectory)) {
+			$relativeDataPath = str_repeat('../', substr_count(trim($applicationRootDirectory, '/'), '/') + 1) . $relativeDataPath;
+		}
 		$commands = array(
-			"cd $targetReleasePath/$applicationRootDirectory",
-			'{ [ -d ../../shared/Data/fileadmin ] || mkdir -p ../../shared/Data/fileadmin ; }',
-			'{ [ -d ../../shared/Data/uploads ] || mkdir -p ../../shared/Data/uploads ; }',
-			"ln -snvf ../../shared/Data/fileadmin fileadmin",
-			"ln -snvf ../../shared/Data/uploads uploads"
+			"cd $workingDirectory",
+			"{ [ -d {$relativeDataPath}/fileadmin ] || mkdir -p {$relativeDataPath}/fileadmin ; }",
+			"{ [ -d {$relativeDataPath}/uploads ] || mkdir -p {$relativeDataPath}/uploads ; }",
+			"ln -snvf {$relativeDataPath}/fileadmin",
+			"ln -snvf {$relativeDataPath}/uploads"
 		);
 		if (isset($options['directories']) && is_array($options['directories'])) {
 			foreach ($options['directories'] as $directory) {
-				$targetDirectory = escapeshellarg('../../shared/Data/' . $directory);
+				$targetDirectory = escapeshellarg("{$relativeDataPath}/{$directory}");
 				$commands[] = '{ [ -d ' . $targetDirectory . ' ] || mkdir -p ' . $targetDirectory . ' ; }';
-				$commands[] = 'ln -snvf ' . escapeshellarg(str_repeat('../', substr_count(trim($directory, '/'), '/')) . '../../shared/Data/' . $directory) . ' ' . escapeshellarg($directory);
+				$commands[] = 'ln -snvf ' . escapeshellarg(str_repeat('../', substr_count(trim($directory, '/'), '/')) . "$relativeDataPath/$directory") . ' ' . escapeshellarg($directory);
 			}
 		}
 		$this->shell->executeOrSimulate($commands, $node, $deployment);
