@@ -38,7 +38,7 @@ class CreatePackageStatesTask extends AbstractCliTask {
 		if (!$application instanceof CMS) {
 			throw new InvalidConfigurationException('Application must be of type TYPO3 CMS when executing this task!', 1420210955);
 		}
-		$options = array('useApplicationWorkspace' => TRUE);
+		$options = array_replace_recursive($options, array('useApplicationWorkspace' => TRUE));
 		if (!$this->packageStatesFileExists($node, $application, $deployment, $options)) {
 			if ($this->packageExists('typo3_console', $node, $application, $deployment, $options)) {
 				$this->executeCliCommand(array('./typo3cms', 'install:generatepackagestates', '--remove-inactive-packages'), $node, $application, $deployment, $options);
