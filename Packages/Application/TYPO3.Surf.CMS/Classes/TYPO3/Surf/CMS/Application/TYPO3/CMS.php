@@ -11,7 +11,7 @@ use TYPO3\Surf\Domain\Model\Workflow;
  * A TYPO3 CMS application template
  * @TYPO3\Flow\Annotations\Proxy(false)
  */
-class CMS extends \TYPO3\Surf\Application\TYPO3\CMS {
+class CMS extends \TYPO3\Surf\Application\BaseApplication {
 
 	/**
 	 * The production context
