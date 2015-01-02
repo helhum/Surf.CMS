@@ -14,19 +14,13 @@ use TYPO3\Surf\Domain\Model\Workflow;
 class CMS extends \TYPO3\Surf\Application\BaseApplication {
 
 	/**
-	 * The production context
-	 * @var string
-	 */
-	protected $context = 'Production';
-
-	/**
 	 * Set the application production context
 	 *
 	 * @param string $context
 	 * @return CMS
 	 */
 	public function setContext($context) {
-		$this->context = trim($context);
+		$this->options['context'] = trim($context);
 		return $this;
 	}
 
@@ -36,7 +30,18 @@ class CMS extends \TYPO3\Surf\Application\BaseApplication {
 	 * @return string
 	 */
 	public function getContext() {
-		return $this->context;
+		return $this->options['context'];
+	}
+
+	/**
+	 * Constructor
+	 * @param string $name
+	 */
+	public function __construct($name = 'TYPO3 CMS') {
+		parent::__construct($name);
+		$this->options = array_merge($this->options, array(
+			'context' => 'Production',
+		));
 	}
 
 	/**

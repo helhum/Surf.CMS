@@ -36,22 +36,21 @@ abstract class AbstractCliTask extends \TYPO3\Surf\Domain\Model\Task {
 	 */
 	protected function executeCliCommand(array $cliArguments, Node $node, CMS $application, Deployment $deployment, array $options = array()) {
 		$phpBinaryPathAndFilename = isset($options['phpBinaryPathAndFilename']) ? $options['phpBinaryPathAndFilename'] : 'php';
-		if (isset($options['TYPO3_CONTEXT'])) {
-			$commandName = 'TYPO3_CONTEXT=' . $options['TYPO3_CONTEXT'] . ' ';
-		} else {
-			$commandName = 'TYPO3_CONTEXT=' . $application->getContext() . ' ';
+		$commandPrefix = '';
+		if (isset($options['context'])) {
+			$commandPrefix = 'TYPO3_CONTEXT=' . escapeshellarg($options['context']) . ' ';
 		}
-		$commandName .= $phpBinaryPathAndFilename . ' ';
+		$commandPrefix .= $phpBinaryPathAndFilename . ' ';
 		if (isset($options['useApplicationWorkspace']) && $options['useApplicationWorkspace'] === TRUE) {
-			$basePath = $deployment->getWorkspacePath($application);
+			$targetPath = $deployment->getWorkspacePath($application);
 		} else {
-			$basePath = $deployment->getApplicationReleasePath($application);
+			$targetPath = $deployment->getApplicationReleasePath($application);
 		}
 		$webDirectory = isset($options['webDirectory']) ? rtrim($options['webDirectory'], '/') . '/' : '';
 
 		$this->shell->executeOrSimulate(array(
-			'cd ' . escapeshellarg($basePath . $webDirectory),
-			$commandName . implode(' ', array_map('escapeshellarg', $cliArguments))
+			'cd ' . escapeshellarg($targetPath . $webDirectory),
+			$commandPrefix . implode(' ', array_map('escapeshellarg', $cliArguments))
 		), $node, $deployment);
 	}
 
@@ -102,11 +101,11 @@ abstract class AbstractCliTask extends \TYPO3\Surf\Domain\Model\Task {
 	 */
 	protected function packageExists($packageKey, Node $node, CMS $application, Deployment $deployment, array $options = array()) {
 		if (isset($options['useApplicationWorkspace']) && $options['useApplicationWorkspace'] === TRUE) {
-			$basePath = $deployment->getWorkspacePath($application);
+			$targetPath = $deployment->getWorkspacePath($application);
 		} else {
-			$basePath = $deployment->getApplicationReleasePath($application);
+			$targetPath = $deployment->getApplicationReleasePath($application);
 		}
-		$packagePath = \TYPO3\Flow\Utility\Files::concatenatePaths(array($basePath, 'typo3conf/ext/' . $packageKey));
+		$packagePath = \TYPO3\Flow\Utility\Files::concatenatePaths(array($targetPath, 'typo3conf/ext/' . $packageKey));
 		return $this->shell->executeOrSimulate('test -d ' . escapeshellarg($packagePath), $node, $deployment, TRUE) === FALSE ? FALSE : TRUE;
 	}
 }
