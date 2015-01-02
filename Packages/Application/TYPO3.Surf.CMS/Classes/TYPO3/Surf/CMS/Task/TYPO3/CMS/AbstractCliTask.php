@@ -32,7 +32,7 @@ abstract class AbstractCliTask extends \TYPO3\Surf\Domain\Model\Task {
 	 * @param CMS $application
 	 * @param \TYPO3\Surf\Domain\Model\Deployment $deployment
 	 * @param array $options
-	 * @return void
+	 * @return boolean|mixed
 	 */
 	protected function executeCliCommand(array $cliArguments, Node $node, CMS $application, Deployment $deployment, array $options = array()) {
 		$phpBinaryPathAndFilename = isset($options['phpBinaryPathAndFilename']) ? $options['phpBinaryPathAndFilename'] : 'php';
@@ -47,10 +47,10 @@ abstract class AbstractCliTask extends \TYPO3\Surf\Domain\Model\Task {
 		} else {
 			$targetPath = $deployment->getApplicationReleasePath($application);
 		}
-		$webDirectory = isset($options['webDirectory']) ? rtrim($options['webDirectory'], '/') . '/' : '';
+		$applicationRootDirectory = isset($options['applicationRootDirectory']) ? rtrim($options['applicationRootDirectory'], '/') . '/' : '';
 
-		$this->shell->executeOrSimulate(array(
-			'cd ' . escapeshellarg($targetPath . $webDirectory),
+		return $this->shell->executeOrSimulate(array(
+			'cd ' . escapeshellarg($targetPath . $applicationRootDirectory),
 			$commandPrefix . implode(' ', array_map('escapeshellarg', $cliArguments))
 		), $node, $deployment);
 	}

@@ -34,9 +34,9 @@ class SymlinkDataTask extends \TYPO3\Surf\Domain\Model\Task {
 	 */
 	public function execute(Node $node, Application $application, Deployment $deployment, array $options = array()) {
 		$targetReleasePath = $deployment->getApplicationReleasePath($application);
-		$webDirectory = $application->hasOption('webDirectory') ? rtrim($application->getOption('webDirectory'), '/') . '/' : '';
+		$applicationRootDirectory = $application->hasOption('applicationRootDirectory') ? rtrim($application->getOption('applicationRootDirectory'), '/') . '/' : '';
 		$commands = array(
-			"cd $targetReleasePath/$webDirectory",
+			"cd $targetReleasePath/$applicationRootDirectory",
 			'{ [ -d ../../shared/Data/fileadmin ] || mkdir -p ../../shared/Data/fileadmin ; }',
 			'{ [ -d ../../shared/Data/uploads ] || mkdir -p ../../shared/Data/uploads ; }',
 			"ln -snvf ../../shared/Data/fileadmin fileadmin",
