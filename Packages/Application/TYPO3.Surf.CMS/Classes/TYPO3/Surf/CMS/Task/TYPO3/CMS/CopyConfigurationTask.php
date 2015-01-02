@@ -46,6 +46,7 @@ class CopyConfigurationTask extends \TYPO3\Surf\Domain\Model\Task {
 		foreach ($configurations as $configuration) {
 			$targetConfigurationPath = dirname(str_replace($configurationPath, '', $configuration));
 			if ($node->isLocalhost()) {
+				$commands[] = "mkdir -p '{$targetReleasePath}/Configuration/{$targetConfigurationPath}/' 2>&1";
 				$commands[] = "cp {$configuration} {$targetReleasePath}/Configuration/{$targetConfigurationPath}/";
 			} else {
 				$username = $options['username'];
