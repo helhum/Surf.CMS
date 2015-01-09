@@ -41,7 +41,7 @@ class CopyConfigurationTask extends \TYPO3\Surf\Domain\Model\Task {
 		if (!is_dir($configurationPath)) {
 			return;
 		}
-		$configurations = \TYPO3\Flow\Utility\Files::readDirectoryRecursively($configurationPath, 'php');
+		$configurations = \TYPO3\Flow\Utility\Files::readDirectoryRecursively($configurationPath);
 		$commands = array();
 		foreach ($configurations as $configuration) {
 			$targetConfigurationPath = dirname(str_replace($configurationPath, '', $configuration));
