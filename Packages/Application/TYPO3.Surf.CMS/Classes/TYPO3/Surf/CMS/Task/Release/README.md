@@ -12,6 +12,7 @@
 ### On CORE
 1. git clone
 1. modify code and update the version in SystemEnvironmentBuilder.php
+1. modify code and update the dependencies in composer.json of all system packages
 1. git commit -a
 1. git tag
 1. git push (+ gerrit)
