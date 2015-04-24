@@ -46,8 +46,8 @@ class SymlinkDataTask extends \TYPO3\Surf\Domain\Model\Task {
 			"cd $workingDirectory",
 			"{ [ -d {$relativeDataPath}/fileadmin ] || mkdir -p {$relativeDataPath}/fileadmin ; }",
 			"{ [ -d {$relativeDataPath}/uploads ] || mkdir -p {$relativeDataPath}/uploads ; }",
-			"ln -snvf {$relativeDataPath}/fileadmin",
-			"ln -snvf {$relativeDataPath}/uploads"
+			"ln -sf {$relativeDataPath}/fileadmin ./fileadmin",
+			"ln -sf {$relativeDataPath}/uploads ./uploads"
 		);
 		if (isset($options['directories']) && is_array($options['directories'])) {
 			foreach ($options['directories'] as $directory) {
