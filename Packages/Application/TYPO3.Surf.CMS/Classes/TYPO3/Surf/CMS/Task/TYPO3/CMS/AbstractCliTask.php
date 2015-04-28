@@ -115,7 +115,7 @@ abstract class AbstractCliTask extends \TYPO3\Surf\Domain\Model\Task {
 			return 'typo3_console';
 		}
 
-		if ($this->packageExists('coreapi', $node, $application, $deployment)) {
+		if ($this->packageExists('coreapi', $node, $application, $deployment, $options)) {
 			return 'coreapi';
 		}
 
