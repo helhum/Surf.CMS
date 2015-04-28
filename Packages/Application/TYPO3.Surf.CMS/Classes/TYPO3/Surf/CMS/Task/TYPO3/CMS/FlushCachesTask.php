@@ -29,7 +29,7 @@ class FlushCachesTask extends AbstractCliTask {
 	 */
 	public function execute(Node $node, Application $application, Deployment $deployment, array $options = array()) {
 		$this->executeCliCommand(
-			$this->getSuitableCliArguments($node, $application, $deployment),
+			$this->getSuitableCliArguments($node, $application, $deployment, $options),
 			$node,
 			$application,
 			$deployment,
@@ -41,11 +41,12 @@ class FlushCachesTask extends AbstractCliTask {
 	 * @param Node $node
 	 * @param Application $application
 	 * @param Deployment $deployment
+	 * @param array $options
 	 * @return array
 	 * @throws InvalidConfigurationException
 	 */
-	protected function getSuitableCliArguments(Node $node, Application $application, Deployment $deployment) {
-		switch ($this->getAvailableCliPackage($node, $application, $deployment)) {
+	protected function getSuitableCliArguments(Node $node, Application $application, Deployment $deployment, array $options = array()) {
+		switch ($this->getAvailableCliPackage($node, $application, $deployment, $options)) {
 			case 'typo3_console':
 				return array('./typo3cms', 'cache:flush', '--force');
 			case 'coreapi':
