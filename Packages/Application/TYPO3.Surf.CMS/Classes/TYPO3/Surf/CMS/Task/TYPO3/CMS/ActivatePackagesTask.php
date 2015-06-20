@@ -29,7 +29,7 @@ class ActivatePackagesTask extends AbstractCliTask {
 	 * @return void
 	 */
 	public function execute(Node $node, Application $application, Deployment $deployment, array $options = array()) {
-		if (!$this->packageExists('typo3_console', $node, $application, $deployment)) {
+		if (!$this->packageExists('typo3_console', $node, $application, $deployment, $options)) {
 			throw new InvalidConfigurationException('Extension "typo3_console" is not found! Make sure it is available in your project, or remove this task in your deployment configuration!', 1405527176);
 		}
 		$activePackages = isset($options['activePackages']) ? $options['activePackages'] : array();
