@@ -73,6 +73,6 @@ class CreatePackageStatesTask extends AbstractCliTask {
 	 * @return boolean
 	 */
 	protected function packageStatesFileExists(Node $node, CMS $application, Deployment $deployment, array $options = array()) {
-		return $this->fileExists('typo3conf/ext/PackageStates.php', $node, $application, $deployment, $options);
+		return $this->fileExists('typo3conf/PackageStates.php', $node, $application, $deployment, $options);
 	}
 }
