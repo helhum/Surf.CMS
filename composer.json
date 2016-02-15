@@ -9,7 +9,7 @@
     "require": {
         "typo3/flow": "2.2.*",
         "doctrine/migrations": "@dev",
-        "typo3/surf": "@dev",
+        "typo3/surf": "~0.9.0",
         "symfony/process": "~2.1",
         "typo3/buildessentials": "2.2.*"
     },
